@@ -13,6 +13,11 @@ function App() {
         out."
       </h2>
       <p className="author">- Unknown</p>
+      <h2 className="quote2">
+        "The only way to learn a new programming language is by writing programs
+        in it."
+      </h2>
+      <p className="author">- Dennis Ritchie</p>
     </div>
   );
 }
