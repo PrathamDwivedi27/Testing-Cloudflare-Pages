@@ -1,4 +1,4 @@
-name: CI
+name: Receive PR
 
 on:
   pull_request:
