@@ -2,7 +2,7 @@ name: Deploy Cloudflare Pages
 
 on:
   workflow_run:
-    workflows: ['CI']
+    workflows: [CI]
     types: [completed]
     branches: [master]
   pull_request_target:
@@ -16,27 +16,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
+          node-version: '20'
 
-      - run: pnpm install
-      - run: pnpm build
+      - run: npm ci
+      - run: npm run build
 
-      - name: Deploy arishi-website-webapp
-        id: deploy-arishi-website-webapp
+      - name: Deploy alok-website-webapp
+        id: deploy-alok-website-webapp
         uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy ./build/client --project-name=adishwar-rishi-website
-          workingDirectory: 'apps/arishi-website-webapp'
-          packageManager: 'pnpm'
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ./dist --project-name=testing-cloudflare-pages
           wranglerVersion: '3.51.2'
 
       - name: Comment with deploy link
@@ -45,7 +38,7 @@ jobs:
         with:
           script: |
             const apps = [
-              { name: 'arishi-website-webapp', url: process.env.ARISHI_WEBSITE_WEBAPP_DEPLOYMENT_URL },
+              { name: 'alok-website-webapp', url: process.env.ALOK_WEBSITE_WEBAPP_DEPLOYMENT_URL },
               // Add more apps here
             ];
             const commitHash = context.payload.pull_request.head.sha;
@@ -67,4 +60,4 @@ jobs:
               `
             });
         env:
-          ARISHI_WEBSITE_WEBAPP_DEPLOYMENT_URL: ${{ steps.deploy-arishi-website-webapp.outputs.deployment-url }}
+          ALOK_WEBSITE_WEBAPP_DEPLOYMENT_URL: ${{ steps.deploy-alok-website-webapp.outputs.deployment-url }}
