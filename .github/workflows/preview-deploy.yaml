@@ -1,10 +1,13 @@
 name: Deploy Cloudflare Pages
 
 on:
-  workflow_run:
-    workflows: ["Receive PR"]
-    types:
-      - completed
+  workflow_dispatch:
+    
+  # workflow_run:
+  #   workflows: ["Receive PR"]
+  #   types:
+  #     - completed
+  
   # pull_request_target:
   #     types: [opened, synchronize, reopened]
 
@@ -33,7 +36,7 @@ jobs:
           wranglerVersion: '3.51.2'
 
       - name: Comment with deploy link
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         uses: actions/github-script@v7
         with:
           script: |
