@@ -7,9 +7,13 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <>
-      <div>Alok Gupta Testing</div>
-    </>
+    <div className="quote-container">
+      <h2 className="quote">
+        "Programming is not about what you know; it's about what you can figure
+        out."
+      </h2>
+      <p className="author">- Unknown</p>
+    </div>
   );
 }
 
