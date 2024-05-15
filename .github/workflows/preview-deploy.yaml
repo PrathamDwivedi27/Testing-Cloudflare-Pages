@@ -5,8 +5,9 @@ on:
     workflows: [CI]
     types: [completed]
     branches: [master]
-  pull_request:
+  pull_request_target:
     branches: [master]
+    types: [opened, synchronize]
 
 jobs:
   check:
