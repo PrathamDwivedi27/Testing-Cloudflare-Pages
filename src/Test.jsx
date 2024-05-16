@@ -2,7 +2,11 @@ import React from 'react'
 
 function Test() {
   return (
-    <div>This is test components :)</div>
+    <div>
+      <h1>Hello World</h1>
+      This is test components :)
+    </div>
+    
   )
 }
 
