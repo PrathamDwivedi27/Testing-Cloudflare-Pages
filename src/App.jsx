@@ -18,6 +18,7 @@ function App() {
         in it."
       </h2>
       <p className="author">- Dennis Ritchie</p>
+      <h1>Love the way you lie :)</h1>
     </div>
   );
 }
