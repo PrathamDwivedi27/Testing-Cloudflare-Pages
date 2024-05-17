@@ -9,11 +9,11 @@ jobs:
         name: Adding Label to issue
         runs-on: ubuntu-latest
         steps:
-          - uses: Renato66/auto-label@v2.3.0
+          - uses: Renato66/auto-label@v4
             with:
                 repo-token: ${{ secrets.GITHUB_TOKEN }}
                 ignore-comments: true
-                issue-labels: '["Status: Triage"]'
+                default-labels: '["Status: Triage"]'
 
     Issue-Greeting:
         name: Greeting Message to User
