@@ -13,7 +13,7 @@ jobs:
             with:
                 repo-token: ${{ secrets.GITHUB_TOKEN }}
                 ignore-comments: true
-                default-labels: '["bug"]'
+                issue-labels: '["Status: Triage"]'
 
     Issue-Greeting:
         name: Greeting Message to User
