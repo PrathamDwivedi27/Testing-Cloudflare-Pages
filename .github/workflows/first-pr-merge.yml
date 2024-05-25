@@ -7,6 +7,8 @@ on:
 jobs:
   comment-on-first-merge:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     if: github.event.pull_request.merged == true
     steps:
     - name: Check if this is the user's first merged PR
@@ -18,12 +20,11 @@ jobs:
           const owner = context.repo.owner;
           const repo = context.repo.repo;
 
-          // Search for merged pull requests by the user
-          const { data: mergedPRs } = await github.search.issuesAndPullRequests({
-            q: `repo:${owner}/${repo} type:pr state:closed author:${prAuthor} is:merged`,
-          });
+          const response = await fetch(`https://api.github.com/search/issues?q=repo:${owner}/${repo}+type:pr+state:closed+author:${prAuthor}+is:merged`);
 
-          const mergedCount = mergedPRs.total_count;
+          const data = await response.json();
+          const mergedCount = data.total_count;
+
           core.setOutput('prAuthor', prAuthor);
           core.setOutput('mergedCount', mergedCount);
 
@@ -31,12 +32,15 @@ jobs:
       if: steps.check_first_pr.outputs.mergedCount == '1'
       uses: actions/github-script@v7
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
+          const prNumber = context.payload.pull_request.number;
           const prAuthor = core.getInput('prAuthor');
-          const commentUrl = context.payload.pull_request.comments_url;
-          const commentBody = `Congratulations @${prAuthor} on your first merged pull request! 🎉 Thank you for your contribution!`;
+          const commentBody = `Congratulations on your first merged pull request! 🎉 Thank you for your contribution!`;
 
-          await github.issues.createComment({
-            url: commentUrl,
-            body: commentBody,
-          });
+           await github.rest.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              })
