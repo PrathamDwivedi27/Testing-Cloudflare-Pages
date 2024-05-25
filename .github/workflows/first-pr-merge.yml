@@ -1,11 +1,23 @@
-name: First PR Merge Comment
+name: Pull Request Target Workflow
 
 on:
   pull_request_target:
-    types: [closed]
+    types: [opened, closed] 
 
+    
 jobs:
-  comment-on-first-merge:
+  greet-on-first-pr:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        pr-message: > 
+            Welcome to the [JSON Schema](https://json-schema.org/) Community. Thanks a lot for creating your first pull request!! 🎉🎉  We are so excited you are here! We hope this is only the first of many!
+            For more details check out [README.md](https://github.com/json-schema-org/website?tab=readme-ov-file#-welcome-to-the-json-schema-website) file.
+
+  greet-on-first-merge:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -24,8 +36,7 @@ jobs:
 
           const data = await response.json();
           const mergedCount = data.total_count;
-
-          core.setOutput('prAuthor', prAuthor);
+          console.log(`User ${prAuthor} has ${mergedCount} merged PRs`);
           core.setOutput('mergedCount', mergedCount);
 
     - name: Comment on the first merged PR
@@ -35,8 +46,8 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const prNumber = context.payload.pull_request.number;
-          const prAuthor = core.getInput('prAuthor');
-          const commentBody = `Congratulations on your first merged pull request! 🎉 Thank you for your contribution!`;
+          const prAuthor = context.payload.pull_request.user.login;
+          const commentBody = `Congratulations, @${prAuthor} for your first pull request merge in this repository! 🎉🎉. Thanks for your contribution to JSON Schema! `;
 
            await github.rest.issues.createComment({
                 issue_number: prNumber,
