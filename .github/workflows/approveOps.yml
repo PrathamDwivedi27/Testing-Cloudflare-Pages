@@ -1,0 +1,28 @@
+name: ApproveOps
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  approveops:
+    runs-on: ubuntu-latest
+    if: contains(github.event.comment.body, '/do-stuff')
+
+    steps:
+    # get the app's installation token
+    - uses: actions/create-github-app-token@v1
+      id: app-token
+      with:
+        app-id: ${{ vars.APP_ID }}
+        private-key: ${{ secrets.APP_PRIVATE_KEY }}
+        
+    - name: ApproveOps - ApproveOps in IssueOps
+      uses: joshjohanning/approveops@v2
+      id: check-approval
+      with:
+        token: ${{ steps.app-token.outputs.token }} # use a github app token or a PAT
+        approve-command: '/approve'
+        team-name: 'approver-team' # The name of the team in GitHub to check for the approval command; e.g.: approver-team
+        fail-if-approval-not-found: true # Fail the action (show the action run as red) if the command is not found in the comments from someone in the approver team"
+        post-successful-approval-comment: true # Boolean whether to post successful approval comment
+        successful-approval-comment: ':tada:  You were able to run the workflow because someone left an approval in the comments!!' 
